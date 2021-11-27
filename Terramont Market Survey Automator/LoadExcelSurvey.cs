@@ -13,6 +13,8 @@ namespace Terramont_Market_Survey_Automator
 {
     public partial class LoadExcelSurvey : Form
     {
+        ImageList propertyImages;
+        List<ImageList> propertyImagesList = new List<ImageList>();
         public LoadExcelSurvey()
         {
             InitializeComponent();
@@ -87,6 +89,7 @@ namespace Terramont_Market_Survey_Automator
                     }
                     else
                     {
+                        string property = excelWorksheet.Cells[i, 1].value.ToString();
                         string[] row = new string[] { excelWorksheet.Cells[i, 1].value.ToString(),
                         excelWorksheet.Cells[i, 2].value.ToString(),
                         excelWorksheet.Cells[i, 3].value.ToString(),
@@ -103,16 +106,18 @@ namespace Terramont_Market_Survey_Automator
                         excelWorksheet.Cells[i, 14].value.ToString()};
 
                         excelDataGrid.Rows.Add(row);
+                        cboProperties.Items.Add(property);
                     }
                 }
+
                 excelWorkbook.Close();
                 excelApp.Quit();
+
 
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbook);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorksheet);
             }
-
         }
     }
 }
