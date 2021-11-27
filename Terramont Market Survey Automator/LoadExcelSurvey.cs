@@ -62,15 +62,55 @@ namespace Terramont_Market_Survey_Automator
 
                 int rowCount = excelRange.Rows.Count;
                 int colCount = excelRange.Columns.Count;
+                excelDataGrid.Rows.Clear();
+                excelDataGrid.Columns.Clear();
 
-                for (int i = 1; i <= rowCount; i++)
+                for (int i = 1; i <= excelWorksheet.Columns.Count; i++)
                 {
-                    for (int j = 1; j <= colCount; j++)
+                    if (excelWorksheet.Cells[1, i].value == null)
                     {
-                        excelDataGrid.Columns.Add(excelRange.Cells[i, j].Value2.ToString());
+                        break;      // BREAK LOOP.
                     }
-                    break;
+                    else
+                    {
+                        DataGridViewTextBoxColumn col = new DataGridViewTextBoxColumn();
+                        col.HeaderText = excelWorksheet.Cells[1, i].value;
+                        int colIndex = excelDataGrid.Columns.Add(col);        // ADD A NEW COLUMN.
+                    }
                 }
+
+                for (int i = 2; i <= excelWorksheet.Rows.Count; i++)
+                {
+                    if (excelWorksheet.Cells[i, 1].value == null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        string[] row = new string[] { excelWorksheet.Cells[i, 1].value.ToString(),
+                        excelWorksheet.Cells[i, 2].value.ToString(),
+                        excelWorksheet.Cells[i, 3].value.ToString(),
+                        excelWorksheet.Cells[i, 4].value.ToString(),
+                        excelWorksheet.Cells[i, 5].value.ToString(),
+                        excelWorksheet.Cells[i, 6].value.ToString(),
+                        excelWorksheet.Cells[i, 7].value.ToString(),
+                        excelWorksheet.Cells[i, 8].value.ToString(),
+                        excelWorksheet.Cells[i, 9].value.ToString(),
+                        excelWorksheet.Cells[i, 10].value.ToString(),
+                        excelWorksheet.Cells[i, 11].value.ToString(),
+                        excelWorksheet.Cells[i, 12].value.ToString(),
+                        excelWorksheet.Cells[i, 13].value.ToString(),
+                        excelWorksheet.Cells[i, 14].value.ToString()};
+
+                        excelDataGrid.Rows.Add(row);
+                    }
+                }
+                excelWorkbook.Close();
+                excelApp.Quit();
+
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbook);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorksheet);
             }
 
         }
