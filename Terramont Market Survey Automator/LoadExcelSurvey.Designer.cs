@@ -34,16 +34,20 @@
             this.tabAvailabilitiesOverview = new System.Windows.Forms.TabPage();
             this.excelDataGrid = new System.Windows.Forms.DataGridView();
             this.tabAvailabilitiesMap = new System.Windows.Forms.TabPage();
+            this.btnDeleteImage = new System.Windows.Forms.Button();
+            this.btnSaveImage = new System.Windows.Forms.Button();
+            this.btnSelectImage = new System.Windows.Forms.Button();
+            this.btnLastImage = new System.Windows.Forms.Button();
+            this.btnNextImage = new System.Windows.Forms.Button();
+            this.btnPreviousImage = new System.Windows.Forms.Button();
+            this.btnFirstImage = new System.Windows.Forms.Button();
+            this.propertyImage = new System.Windows.Forms.PictureBox();
             this.txtNumOfProperties = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cboProperties = new System.Windows.Forms.ComboBox();
-            this.propertyImage = new System.Windows.Forms.PictureBox();
-            this.btnFirstImage = new System.Windows.Forms.Button();
-            this.btnPreviousImage = new System.Windows.Forms.Button();
-            this.btnNextImage = new System.Windows.Forms.Button();
-            this.btnLastImage = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.btnSelectImage = new System.Windows.Forms.Button();
+            this.rdoFloorPlan = new System.Windows.Forms.RadioButton();
+            this.rdoGeneralImage = new System.Windows.Forms.RadioButton();
             this.documentPreview.SuspendLayout();
             this.tabAvailabilitiesOverview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.excelDataGrid)).BeginInit();
@@ -92,6 +96,10 @@
             // 
             // tabAvailabilitiesMap
             // 
+            this.tabAvailabilitiesMap.Controls.Add(this.rdoGeneralImage);
+            this.tabAvailabilitiesMap.Controls.Add(this.rdoFloorPlan);
+            this.tabAvailabilitiesMap.Controls.Add(this.btnDeleteImage);
+            this.tabAvailabilitiesMap.Controls.Add(this.btnSaveImage);
             this.tabAvailabilitiesMap.Controls.Add(this.btnSelectImage);
             this.tabAvailabilitiesMap.Controls.Add(this.btnLastImage);
             this.tabAvailabilitiesMap.Controls.Add(this.btnNextImage);
@@ -106,34 +114,73 @@
             this.tabAvailabilitiesMap.Padding = new System.Windows.Forms.Padding(3);
             this.tabAvailabilitiesMap.Size = new System.Drawing.Size(769, 380);
             this.tabAvailabilitiesMap.TabIndex = 1;
-            this.tabAvailabilitiesMap.Text = "Availabilities Map";
+            this.tabAvailabilitiesMap.Text = "Properties";
             this.tabAvailabilitiesMap.UseVisualStyleBackColor = true;
             // 
-            // txtNumOfProperties
+            // btnDeleteImage
             // 
-            this.txtNumOfProperties.Enabled = false;
-            this.txtNumOfProperties.Location = new System.Drawing.Point(185, 31);
-            this.txtNumOfProperties.Name = "txtNumOfProperties";
-            this.txtNumOfProperties.Size = new System.Drawing.Size(33, 20);
-            this.txtNumOfProperties.TabIndex = 2;
+            this.btnDeleteImage.Location = new System.Drawing.Point(290, 32);
+            this.btnDeleteImage.Name = "btnDeleteImage";
+            this.btnDeleteImage.Size = new System.Drawing.Size(84, 23);
+            this.btnDeleteImage.TabIndex = 7;
+            this.btnDeleteImage.Text = "Delete Image";
+            this.btnDeleteImage.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // btnSaveImage
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 34);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(176, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Total Images For Selected Property:";
+            this.btnSaveImage.Location = new System.Drawing.Point(208, 31);
+            this.btnSaveImage.Name = "btnSaveImage";
+            this.btnSaveImage.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveImage.TabIndex = 6;
+            this.btnSaveImage.Text = "Save Image";
+            this.btnSaveImage.UseVisualStyleBackColor = true;
+            this.btnSaveImage.Click += new System.EventHandler(this.btnSaveImage_Click);
             // 
-            // cboProperties
+            // btnSelectImage
             // 
-            this.cboProperties.FormattingEnabled = true;
-            this.cboProperties.Location = new System.Drawing.Point(6, 6);
-            this.cboProperties.Name = "cboProperties";
-            this.cboProperties.Size = new System.Drawing.Size(342, 21);
-            this.cboProperties.TabIndex = 0;
-            this.cboProperties.Text = "-Select Property to Add Images-";
+            this.btnSelectImage.Location = new System.Drawing.Point(119, 31);
+            this.btnSelectImage.Name = "btnSelectImage";
+            this.btnSelectImage.Size = new System.Drawing.Size(82, 23);
+            this.btnSelectImage.TabIndex = 5;
+            this.btnSelectImage.Text = "Select Image";
+            this.btnSelectImage.UseVisualStyleBackColor = true;
+            this.btnSelectImage.Click += new System.EventHandler(this.btnSelectImage_Click);
+            // 
+            // btnLastImage
+            // 
+            this.btnLastImage.Location = new System.Drawing.Point(289, 334);
+            this.btnLastImage.Name = "btnLastImage";
+            this.btnLastImage.Size = new System.Drawing.Size(76, 23);
+            this.btnLastImage.TabIndex = 4;
+            this.btnLastImage.Text = "Last Image";
+            this.btnLastImage.UseVisualStyleBackColor = true;
+            // 
+            // btnNextImage
+            // 
+            this.btnNextImage.Location = new System.Drawing.Point(205, 334);
+            this.btnNextImage.Name = "btnNextImage";
+            this.btnNextImage.Size = new System.Drawing.Size(76, 23);
+            this.btnNextImage.TabIndex = 4;
+            this.btnNextImage.Text = "Next Image";
+            this.btnNextImage.UseVisualStyleBackColor = true;
+            // 
+            // btnPreviousImage
+            // 
+            this.btnPreviousImage.Location = new System.Drawing.Point(107, 334);
+            this.btnPreviousImage.Name = "btnPreviousImage";
+            this.btnPreviousImage.Size = new System.Drawing.Size(92, 23);
+            this.btnPreviousImage.TabIndex = 4;
+            this.btnPreviousImage.Text = "Previous Image";
+            this.btnPreviousImage.UseVisualStyleBackColor = true;
+            // 
+            // btnFirstImage
+            // 
+            this.btnFirstImage.Location = new System.Drawing.Point(26, 334);
+            this.btnFirstImage.Name = "btnFirstImage";
+            this.btnFirstImage.Size = new System.Drawing.Size(75, 23);
+            this.btnFirstImage.TabIndex = 4;
+            this.btnFirstImage.Text = "First Image";
+            this.btnFirstImage.UseVisualStyleBackColor = true;
             // 
             // propertyImage
             // 
@@ -146,55 +193,58 @@
             this.propertyImage.TabIndex = 3;
             this.propertyImage.TabStop = false;
             // 
-            // btnFirstImage
+            // txtNumOfProperties
             // 
-            this.btnFirstImage.Location = new System.Drawing.Point(26, 334);
-            this.btnFirstImage.Name = "btnFirstImage";
-            this.btnFirstImage.Size = new System.Drawing.Size(75, 23);
-            this.btnFirstImage.TabIndex = 4;
-            this.btnFirstImage.Text = "First Image";
-            this.btnFirstImage.UseVisualStyleBackColor = true;
+            this.txtNumOfProperties.Enabled = false;
+            this.txtNumOfProperties.Location = new System.Drawing.Point(80, 32);
+            this.txtNumOfProperties.Name = "txtNumOfProperties";
+            this.txtNumOfProperties.Size = new System.Drawing.Size(33, 20);
+            this.txtNumOfProperties.TabIndex = 2;
             // 
-            // btnPreviousImage
+            // label1
             // 
-            this.btnPreviousImage.Location = new System.Drawing.Point(107, 334);
-            this.btnPreviousImage.Name = "btnPreviousImage";
-            this.btnPreviousImage.Size = new System.Drawing.Size(92, 23);
-            this.btnPreviousImage.TabIndex = 4;
-            this.btnPreviousImage.Text = "Previous Image";
-            this.btnPreviousImage.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 34);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Total Images";
             // 
-            // btnNextImage
+            // cboProperties
             // 
-            this.btnNextImage.Location = new System.Drawing.Point(205, 334);
-            this.btnNextImage.Name = "btnNextImage";
-            this.btnNextImage.Size = new System.Drawing.Size(76, 23);
-            this.btnNextImage.TabIndex = 4;
-            this.btnNextImage.Text = "Next Image";
-            this.btnNextImage.UseVisualStyleBackColor = true;
-            // 
-            // btnLastImage
-            // 
-            this.btnLastImage.Location = new System.Drawing.Point(289, 334);
-            this.btnLastImage.Name = "btnLastImage";
-            this.btnLastImage.Size = new System.Drawing.Size(76, 23);
-            this.btnLastImage.TabIndex = 4;
-            this.btnLastImage.Text = "Last Image";
-            this.btnLastImage.UseVisualStyleBackColor = true;
+            this.cboProperties.FormattingEnabled = true;
+            this.cboProperties.Location = new System.Drawing.Point(6, 6);
+            this.cboProperties.Name = "cboProperties";
+            this.cboProperties.Size = new System.Drawing.Size(342, 21);
+            this.cboProperties.TabIndex = 0;
+            this.cboProperties.Text = "-Select Property to Add Images-";
+            this.cboProperties.TextChanged += new System.EventHandler(this.cboProperties_TextChanged);
             // 
             // openFileDialog
             // 
             this.openFileDialog.FileName = "openFileDialog";
             // 
-            // btnSelectImage
+            // rdoFloorPlan
             // 
-            this.btnSelectImage.Location = new System.Drawing.Point(233, 30);
-            this.btnSelectImage.Name = "btnSelectImage";
-            this.btnSelectImage.Size = new System.Drawing.Size(82, 23);
-            this.btnSelectImage.TabIndex = 5;
-            this.btnSelectImage.Text = "Select Image";
-            this.btnSelectImage.UseVisualStyleBackColor = true;
-            this.btnSelectImage.Click += new System.EventHandler(this.btnSelectImage_Click);
+            this.rdoFloorPlan.AutoSize = true;
+            this.rdoFloorPlan.Location = new System.Drawing.Point(390, 69);
+            this.rdoFloorPlan.Name = "rdoFloorPlan";
+            this.rdoFloorPlan.Size = new System.Drawing.Size(72, 17);
+            this.rdoFloorPlan.TabIndex = 8;
+            this.rdoFloorPlan.TabStop = true;
+            this.rdoFloorPlan.Text = "Floor Plan";
+            this.rdoFloorPlan.UseVisualStyleBackColor = true;
+            // 
+            // rdoGeneralImage
+            // 
+            this.rdoGeneralImage.AutoSize = true;
+            this.rdoGeneralImage.Location = new System.Drawing.Point(390, 92);
+            this.rdoGeneralImage.Name = "rdoGeneralImage";
+            this.rdoGeneralImage.Size = new System.Drawing.Size(94, 17);
+            this.rdoGeneralImage.TabIndex = 9;
+            this.rdoGeneralImage.TabStop = true;
+            this.rdoGeneralImage.Text = "General Image";
+            this.rdoGeneralImage.UseVisualStyleBackColor = true;
             // 
             // LoadExcelSurvey
             // 
@@ -205,6 +255,7 @@
             this.Controls.Add(this.btnLoadSurvey);
             this.Name = "LoadExcelSurvey";
             this.Text = "Terramont Survey Generator";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoadExcelSurvey_FormClosing);
             this.Load += new System.EventHandler(this.LoadExcelSurvey_Load);
             this.documentPreview.ResumeLayout(false);
             this.tabAvailabilitiesOverview.ResumeLayout(false);
@@ -233,6 +284,10 @@
         private System.Windows.Forms.Button btnFirstImage;
         private System.Windows.Forms.Button btnSelectImage;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.Button btnDeleteImage;
+        private System.Windows.Forms.Button btnSaveImage;
+        private System.Windows.Forms.RadioButton rdoGeneralImage;
+        private System.Windows.Forms.RadioButton rdoFloorPlan;
     }
 }
 

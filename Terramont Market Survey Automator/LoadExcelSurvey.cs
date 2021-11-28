@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace Terramont_Market_Survey_Automator
 {
@@ -44,6 +45,11 @@ namespace Terramont_Market_Survey_Automator
 
         private void btnLoadSurvey_Click(object sender, EventArgs e)
         {
+            string filePath = @"C:/Terramont Property Images/Properties";
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
             string file = "";
             OpenFileDialog excelDialog = new OpenFileDialog
             {
@@ -107,6 +113,21 @@ namespace Terramont_Market_Survey_Automator
 
                         excelDataGrid.Rows.Add(row);
                         cboProperties.Items.Add(property);
+                        filePath = @"C:/Terramont Property Images/Properties/" + property;
+                        if (!Directory.Exists(filePath))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                        string floorPlanFolder = filePath + "/Floor Plans";
+                        if (!Directory.Exists(floorPlanFolder))
+                        {
+                            Directory.CreateDirectory(floorPlanFolder);
+                        }
+                        string propertyImagesFolder = filePath + "/General Property Images";
+                        if (!Directory.Exists(propertyImagesFolder))
+                        {
+                            Directory.CreateDirectory(propertyImagesFolder);
+                        }
                     }
                 }
 
@@ -117,6 +138,66 @@ namespace Terramont_Market_Survey_Automator
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbook);
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorksheet);
+            }
+        }
+
+        private void LoadExcelSurvey_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            
+        }
+
+        private void btnSaveImage_Click(object sender, EventArgs e)
+        {
+            string filePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString();
+            string fileName = "";
+            Image property;
+            property = propertyImage.Image;
+            SaveFileDialog saveFile = new SaveFileDialog(); 
+
+            if (rdoFloorPlan.Checked)
+            {
+                string floorPlanFile = filePath + "/Floor Plans";
+                saveFile.InitialDirectory = floorPlanFile;
+                fileName = cboProperties.Text.ToString() + "_FloorPlan" + Directory.GetFiles(floorPlanFile).Length.ToString();
+               saveFile.FileName = fileName;
+                if (saveFile.ShowDialog() == DialogResult.OK)
+                {
+                    property.Save(fileName);
+                }
+               
+            }
+            if (rdoGeneralImage.Checked)
+            {
+                string generalImageFile = filePath + "/General Property Images";
+                fileName = cboProperties.Text.ToString() + "_FloorPlan" + Directory.GetFiles(generalImageFile).Length.ToString();
+
+                if (saveFile.ShowDialog() == DialogResult.OK)
+                {
+                    property.Save(fileName);
+                }
+            }
+        }
+
+        private void cboProperties_TextChanged(object sender, EventArgs e)
+        {
+            int fileCount = 0;
+            string filePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString();
+            fileCount = Directory.GetFiles(filePath).Length;
+            txtNumOfProperties.Text = fileCount.ToString();
+
+            if (fileCount == 0)
+            {
+                btnFirstImage.Enabled = false;
+                btnLastImage.Enabled = false;
+                btnNextImage.Enabled = false;
+                btnPreviousImage.Enabled = false;
+            }
+            else if (fileCount > 2)
+            {
+                btnFirstImage.Enabled = true;
+                btnPreviousImage.Enabled = true;
+                btnNextImage.Enabled = true;
+                btnLastImage.Enabled = true;
             }
         }
     }
