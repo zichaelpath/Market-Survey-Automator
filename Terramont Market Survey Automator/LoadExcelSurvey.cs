@@ -164,7 +164,9 @@ namespace Terramont_Market_Survey_Automator
                     property.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                     fileStream.Close();
                 }
-               
+                string floorPlanFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\Floor Plans\\";
+                int fileCount = Directory.GetFiles(floorPlanFilePath).Length;
+                txtFloorPlansExist.Text = fileCount.ToString();
             }
             if (rdoGeneralImage.Checked)
             {
@@ -181,6 +183,9 @@ namespace Terramont_Market_Survey_Automator
                     property.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                     fileStream.Close();
                 }
+                string generalImagesFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\General Property Images\\";
+                int fileCount = Directory.GetFiles(generalImagesFilePath).Length;
+                txtPropertyImages.Text = fileCount.ToString();
             }
 
             saveFile.Dispose();
@@ -189,9 +194,12 @@ namespace Terramont_Market_Survey_Automator
         private void cboProperties_TextChanged(object sender, EventArgs e)
         {
             int fileCount = 0;
-            string filePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString();
-            fileCount = Directory.GetFiles(filePath).Length;
-            txtNumOfProperties.Text = fileCount.ToString();
+            string floorPlanFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\Floor Plans\\";
+            fileCount = Directory.GetFiles(floorPlanFilePath).Length;
+            txtFloorPlansExist.Text = fileCount.ToString();
+            string generalImagesFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\General Property Images\\";
+            fileCount = Directory.GetFiles(generalImagesFilePath).Length;
+            txtPropertyImages.Text = fileCount.ToString(); 
 
             if (fileCount == 0)
             {
