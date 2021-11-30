@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Office.Interop.Excel;
 using System.IO;
+using Microsoft.Office.Interop.Excel;
 
 namespace Terramont_Market_Survey_Automator
 {
     public partial class LoadExcelSurvey : Form
     {
-        ImageList propertyImages;
-        List<ImageList> propertyImagesList = new List<ImageList>();
+       
+        
         public LoadExcelSurvey()
         {
             InitializeComponent();
@@ -56,8 +51,7 @@ namespace Terramont_Market_Survey_Automator
                 InitialDirectory = @"C:/",
                 Title = "Load Survey",
                 CheckFileExists = true,
-                CheckPathExists = true,
-                RestoreDirectory = true
+                CheckPathExists = true
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -148,34 +142,48 @@ namespace Terramont_Market_Survey_Automator
 
         private void btnSaveImage_Click(object sender, EventArgs e)
         {
-            string filePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString();
+            string filePath = @"C:\Terramont Property Images\Properties\" + cboProperties.Text.ToString();
             string fileName = "";
-            Image property;
-            property = propertyImage.Image;
+            Image property = new Bitmap(propertyImage.Image);
+            
             SaveFileDialog saveFile = new SaveFileDialog(); 
 
             if (rdoFloorPlan.Checked)
             {
-                string floorPlanFile = filePath + "/Floor Plans";
+                string floorPlanFile = filePath + "\\Floor Plans\\";
                 saveFile.InitialDirectory = floorPlanFile;
+                saveFile.RestoreDirectory = true;
+                
+                saveFile.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
+                saveFile.DefaultExt = "*.jpg";
                 fileName = cboProperties.Text.ToString() + "_FloorPlan" + Directory.GetFiles(floorPlanFile).Length.ToString();
                saveFile.FileName = fileName;
                 if (saveFile.ShowDialog() == DialogResult.OK)
                 {
-                    property.Save(fileName);
+                    System.IO.FileStream fileStream = (System.IO.FileStream)saveFile.OpenFile();
+                    property.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    fileStream.Close();
                 }
                
             }
             if (rdoGeneralImage.Checked)
             {
-                string generalImageFile = filePath + "/General Property Images";
-                fileName = cboProperties.Text.ToString() + "_FloorPlan" + Directory.GetFiles(generalImageFile).Length.ToString();
-
+                string generalImageFile = filePath + "\\General Property Images\\";
+                saveFile.InitialDirectory = generalImageFile;
+                saveFile.RestoreDirectory = true;
+                saveFile.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
+                saveFile.DefaultExt = "*.jpg";
+                fileName = cboProperties.Text.ToString() + "_GeneralPropertyImages" + Directory.GetFiles(generalImageFile).Length.ToString();
+                saveFile.FileName= fileName;   
                 if (saveFile.ShowDialog() == DialogResult.OK)
                 {
-                    property.Save(fileName);
+                    System.IO.FileStream fileStream = (System.IO.FileStream)saveFile.OpenFile();
+                    property.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    fileStream.Close();
                 }
             }
+
+            saveFile.Dispose();
         }
 
         private void cboProperties_TextChanged(object sender, EventArgs e)
