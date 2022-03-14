@@ -602,7 +602,7 @@ namespace Terramont_Market_Survey_Automator
 					aBuilder.InsertCell();
 					aBuilder.Write(propCount.ToString());
 					secondHalfTable.Rows[RowCount].Cells[0].CellFormat.Shading.BackgroundPatternColor = Color.DarkBlue;
-					aBuilder.Write(propCount.ToString());
+					
 
 					font.Color = Color.Black;
 					aBuilder.InsertCell();
