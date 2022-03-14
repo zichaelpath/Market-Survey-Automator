@@ -3,17 +3,61 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 using Microsoft.Office.Interop.Excel;
 
 namespace Terramont_Market_Survey_Automator
 {
 	public partial class LoadExcelSurvey : Form
 	{
-	   
-		
+
+		Timer detailsCheck;
+		List<Property> properties = new List<Property>();
+		List<string> propertyFloorPlanDirectories = new List<string>();
+		List<string> propertyGeneralImageDirectories = new List<string>();
+		List<string> clientNeeds = new List<string>();
+		List<Broker> brokerDetails = new List<Broker>();
+		List<string> imagePaths = new List<string>();
+		SurveyGenerator survey;
 		public LoadExcelSurvey()
 		{
 			InitializeComponent();
+			detailsCheck = new Timer();
+			detailsCheck.Interval = 200;
+			detailsCheck.Tick += new EventHandler(detailsCheck_click);
+			detailsCheck.Start();
+			Directory.GetCurrentDirectory().Contains("DefaultItems");
+			imagePaths.Add(System.IO.Directory.GetCurrentDirectory() + "\\DefaultItems\\needsAnalysis.png");
+			imagePaths.Add(System.IO.Directory.GetCurrentDirectory() + "\\DefaultItems\\reserachProcess.png");
+			imagePaths.Add(System.IO.Directory.GetCurrentDirectory() + "\\DefaultItems\\availabilityOverview.png");
+		
+		}
+
+		private void detailsCheck_click(object sender, EventArgs e)
+		{
+			string filePath = @"C:\Terramont Clients\" + txtClient.Text;
+			
+
+			if (txtArea.Text != "" && txtTerm.Text != "" && txtGrowth.Text != "" & txtRelocationObjectives.Text != "" && txtLocation.Text != ""
+				&& txtBuildingType.Text != "" && txtParking.Text != "" && txtComments.Text != "" && txtClient.Text != "")
+			{
+				btnSaveNeeds.Enabled = true;
+			}
+			if (txtArea.Text == "" || txtTerm.Text == "" || txtGrowth.Text == "" || txtRelocationObjectives.Text == "" || txtLocation.Text == ""
+				|| txtBuildingType.Text == "" || txtParking.Text == "" || txtComments.Text == "" || txtClient.Text == "")
+			{
+				btnSaveNeeds.Enabled = false;
+			}
+
+			if (clientNeeds.Count > 1 && properties.Count != 0 && propertyFloorPlanDirectories.Count > 0 &&
+				propertyGeneralImageDirectories.Count > 0)
+			{
+				btnGenerateSurvey.Enabled = true;
+			}
+			else
+			{
+				btnGenerateSurvey.Enabled = false;
+			}
 		}
 
 		private void btnSelectImage_Click(object sender, EventArgs e)
@@ -41,6 +85,7 @@ namespace Terramont_Market_Survey_Automator
 		private void btnLoadSurvey_Click(object sender, EventArgs e)
 		{
 			string filePath = @"C:/Terramont Property Images/Properties";
+			
 			if (!Directory.Exists(filePath))
 			{
 				Directory.CreateDirectory(filePath);
@@ -89,6 +134,7 @@ namespace Terramont_Market_Survey_Automator
 					}
 					else
 					{
+						Property propertyInfo = new Property();
 						string property = excelWorksheet.Cells[i, 1].value.ToString();
 						string[] row = new string[] { excelWorksheet.Cells[i, 1].value.ToString(),
 						excelWorksheet.Cells[i, 2].value.ToString(),
@@ -105,6 +151,22 @@ namespace Terramont_Market_Survey_Automator
 						excelWorksheet.Cells[i, 13].value.ToString(),
 						excelWorksheet.Cells[i, 14].value.ToString()};
 
+						propertyInfo.Address = excelWorksheet.Cells[i, 1].value.ToString();
+						propertyInfo.Landlord = excelWorksheet.Cells[i, 2].value.ToString();
+						propertyInfo.RentableArea = excelWorksheet.Cells[i, 3].value.ToString();
+						propertyInfo.Term = excelWorksheet.Cells[i, 4].value.ToString();
+						propertyInfo.Occupancy = excelWorksheet.Cells[i, 5].value.ToString();
+						propertyInfo.Incentives = excelWorksheet.Cells[i, 6].value.ToString();
+						propertyInfo.NetRent = excelWorksheet.Cells[i, 7].value.ToString();
+						propertyInfo.OperationCosts = excelWorksheet.Cells[i, 8].value.ToString();
+						propertyInfo.Taxes = excelWorksheet.Cells[i, 9].value.ToString();
+						propertyInfo.Energy = excelWorksheet.Cells[i, 10].value.ToString();
+						propertyInfo.TotalAdditionalRent = excelWorksheet.Cells[i, 11].value.ToString();
+						propertyInfo.GrossRent = excelWorksheet.Cells[i, 12].value.ToString();
+						propertyInfo.Parking = excelWorksheet.Cells[i, 13].value.ToString();
+						propertyInfo.Comments = excelWorksheet.Cells[i, 14].value.ToString();
+						properties.Add(propertyInfo);
+
 						excelDataGrid.Rows.Add(row);
 						cboProperties.Items.Add(property);
 						filePath = @"C:/Terramont Property Images/Properties/" + property;
@@ -112,19 +174,18 @@ namespace Terramont_Market_Survey_Automator
 						{
 							Directory.CreateDirectory(filePath);
 						}
-						string floorPlanFolder = filePath + "/Floor Plans";
+						string floorPlanFolder = filePath + "\\Floor Plans";
 						if (!Directory.Exists(floorPlanFolder))
 						{
 							Directory.CreateDirectory(floorPlanFolder);
 						}
-						string propertyImagesFolder = filePath + "/General Property Images";
+						string propertyImagesFolder = filePath + "\\General Property Images";
 						if (!Directory.Exists(propertyImagesFolder))
 						{
 							Directory.CreateDirectory(propertyImagesFolder);
 						}
 					}
 				}
-
 				excelWorkbook.Close();
 				excelApp.Quit();
 
@@ -167,6 +228,9 @@ namespace Terramont_Market_Survey_Automator
 				string floorPlanFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\Floor Plans\\";
 				int fileCount = Directory.GetFiles(floorPlanFilePath).Length;
 				txtFloorPlansExist.Text = fileCount.ToString();
+
+				txtFileList.Text += saveFile.FileName + "\r\n";
+				propertyFloorPlanDirectories.Add(saveFile.FileName);
 			}
 			if (rdoGeneralImage.Checked)
 			{
@@ -186,6 +250,11 @@ namespace Terramont_Market_Survey_Automator
 				string generalImagesFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\General Property Images\\";
 				int fileCount = Directory.GetFiles(generalImagesFilePath).Length;
 				txtPropertyImages.Text = fileCount.ToString();
+
+				
+				txtFileList.Text += saveFile.FileName + "\r\n";
+				propertyGeneralImageDirectories.Add(saveFile.FileName);
+			
 			}
 
 			saveFile.Dispose();
@@ -199,21 +268,76 @@ namespace Terramont_Market_Survey_Automator
 			txtFloorPlansExist.Text = fileCount.ToString();
 			string generalImagesFilePath = @"C:/Terramont Property Images/Properties/" + cboProperties.Text.ToString() + "\\General Property Images\\";
 			fileCount = Directory.GetFiles(generalImagesFilePath).Length;
-			txtPropertyImages.Text = fileCount.ToString(); 
+			txtPropertyImages.Text = fileCount.ToString();
 
-			if (fileCount == 0)
+			string filePath;
+			string[] files;
+			if (rdoFloorPlan.Checked)
 			{
-				btnFirstImage.Enabled = false;
-				btnLastImage.Enabled = false;
-				btnNextImage.Enabled = false;
-				btnPreviousImage.Enabled = false;
+				filePath = @"C:\Terramont Property Images\Properties\" + cboProperties.Text.ToString() + "\\Floor Plans\\";
+				files = Directory.GetFiles(filePath);
+				
+				if (txtFileList.Text != "")
+				{
+					txtFileList.Text = "";
+				}
+
+				
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					txtFileList.Text += files[i] + "\r\n";
+					for (int j = 0; j < files.Length; j++)
+					{
+						if (propertyFloorPlanDirectories.Count == 0)
+						{
+							propertyFloorPlanDirectories.Add(files[i]);
+						}
+						if (files[i] != propertyFloorPlanDirectories[j])
+						{
+							propertyFloorPlanDirectories.Add(files[i]);
+						}
+						else
+						{
+							continue;
+						}
+					}
+				}
 			}
-			else if (fileCount > 2)
+			if (rdoGeneralImage.Checked)
 			{
-				btnFirstImage.Enabled = true;
-				btnPreviousImage.Enabled = true;
-				btnNextImage.Enabled = true;
-				btnLastImage.Enabled = true;
+				filePath = @"C:\Terramont Property Images\Properties\" + cboProperties.Text.ToString() + "\\General Property Images\\";
+				files = Directory.GetFiles(filePath);
+				
+
+				if (txtFileList.Text != "")
+				{
+					txtFileList.Text = "";
+				}
+
+				
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					
+					txtFileList.Text += files[i] + "\r\n";
+					for (int j = 0;j < files.Length; j++)
+					{
+						if (propertyGeneralImageDirectories.Count == 0)
+						{
+							propertyGeneralImageDirectories.Add(files[i]);
+						}
+						if (files[i] != propertyGeneralImageDirectories[j])
+						{
+							propertyGeneralImageDirectories.Add(files[i]);
+						}
+						else
+						{
+							continue;
+						}
+					}
+
+				}
 			}
 		}
 
@@ -255,5 +379,190 @@ namespace Terramont_Market_Survey_Automator
 				txtFloorPlansExist.Text = fileCount.ToString();
 			}
 		}
+
+		
+
+		private void rdoFloorPlan_CheckedChanged(object sender, EventArgs e)
+		{
+			string filePath;
+			string[] files;
+			if (cboProperties.Text != "-Select Properties To Add Images-" && rdoFloorPlan.Checked)
+			{
+				filePath = @"C:\Terramont Property Images\Properties\" + cboProperties.Text.ToString() + "\\Floor Plans\\";
+				files = Directory.GetFiles(filePath);
+				string fileName = "";
+				if (txtFileList.Text != "")
+				{
+					txtFileList.Text = "";
+				}
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					fileName = Path.GetFileName(files[i]);
+					txtFileList.Text += fileName + "\r\n";
+					for (int j = 0; j < files.Length; j++)
+					{
+						if (propertyFloorPlanDirectories.Count == 0)
+						{
+							propertyFloorPlanDirectories.Add(files[i]);
+						}
+						if (files[i] != propertyFloorPlanDirectories[j])
+						{
+							propertyFloorPlanDirectories.Add(files[i]);
+						}
+						else
+						{
+							continue;
+						}
+					}
+
+				}
+			}
+		}
+
+		private void rdoGeneralImage_CheckedChanged(object sender, EventArgs e)
+		{
+			string filePath;
+			string[] files;
+			if (cboProperties.Text != "-Select Properties To Add Images-" && rdoGeneralImage.Checked)
+			{
+				filePath = @"C:\Terramont Property Images\Properties\" + cboProperties.Text.ToString() + "\\General Property Images\\";
+				files = Directory.GetFiles(filePath);
+				string fileName = "";
+
+				if (txtFileList.Text != "")
+				{
+					txtFileList.Text = "";
+				}
+
+				for (int i = 0; i < files.Length; i++)
+				{
+					fileName = Path.GetFileName(files[i]);
+					txtFileList.Text += fileName + "\r\n";
+					for (int j = 0; j < files.Length; j++)
+					{
+						if (propertyGeneralImageDirectories.Count == 0)
+						{
+							propertyGeneralImageDirectories.Add(files[i]);
+						}
+						if (files[i] != propertyGeneralImageDirectories[j])
+						{
+							propertyGeneralImageDirectories.Add(files[i]);
+						}
+						else
+						{
+							continue;
+						}
+					}
+				}
+			}
+		}
+
+		private void btnSaveNeeds_Click(object sender, EventArgs e)
+		{
+			clientNeeds.Add(txtArea.Text);
+			clientNeeds.Add(txtTerm.Text);
+			clientNeeds.Add(txtGrowth.Text);
+			clientNeeds.Add(txtRelocationObjectives.Text);
+			clientNeeds.Add(txtLocation.Text);
+			clientNeeds.Add(txtBuildingType.Text);
+			clientNeeds.Add(txtParking.Text);
+			clientNeeds.Add(txtComments.Text);
+			clientNeeds.Add(txtClient.Text);
+			string filePath = @"C:\Terramont Clients\" + txtClient.Text;
+			if (!Directory.Exists(filePath))
+			{
+				Directory.CreateDirectory(filePath);
+			}
+			txtArea.Clear();
+			txtTerm.Clear();
+			txtGrowth.Clear();
+			txtRelocationObjectives.Clear();
+			txtLocation.Clear();
+			txtBuildingType.Clear();
+			txtParking.Clear();
+			txtComments.Clear();
+			txtClient.Clear();
+		}
+
+		private void btnGenerateSurvey_Click(object sender, EventArgs e)
+		{
+			bool rem = chkRem.Checked ? true : false;
+			properties = properties.Distinct<Property>().ToList();
+			propertyFloorPlanDirectories = propertyFloorPlanDirectories.Distinct<string>().ToList();
+			propertyGeneralImageDirectories = propertyGeneralImageDirectories.Distinct<string>().ToList();
+			brokerDetails = brokerDetails.Distinct<Broker>().ToList();
+			if (cboLanguage.Text == "French")
+			{
+				survey = new SurveyGenerator(properties, propertyFloorPlanDirectories, propertyGeneralImageDirectories,
+					 clientNeeds, imagePaths, true, rem);
+				survey.CreateSurvey();
+			}
+			else if (cboLanguage.Text == "English")
+			{
+				survey = new SurveyGenerator(properties, propertyFloorPlanDirectories, propertyGeneralImageDirectories,
+					 clientNeeds, imagePaths, false, rem);
+				survey.CreateSurvey();
+			}
+			else
+			{
+				MessageBox.Show("Select a Language/Selectionnez une Langue!");
+				cboLanguage.Focus();
+			}
+		}
+
+		
+
+		
+
+		
+
+		private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (cboLanguage.Text == "French")
+			{
+				lblArea.Text = "Superficie";
+				lblTerm.Text = "Terme";
+				lblGrowth.Text = "Croissance";
+				lblRelocateObjectives.Text = "Objectifs";
+				lblLocation.Text = "Emplacement";
+				lblBuildingType.Text = "Type de Bâtiment";
+				lblComments.Text = "Commentaires";
+
+
+				lblFloorPlans.Text = "Plans d'étage";
+				lblPropertyImages.Text = "Photos de Propriété";
+				rdoFloorPlan.Text = "Plans d'étage";
+				rdoGeneralImage.Text = "Photos de Propriété";
+				lblPropertyList.Text = "Liste des Images de Propriété";
+
+				btnSelectImage.Text = "Sélectionner";
+				btnSaveImage.Text = "Sauver";
+				btnDeleteImage.Text = "Effacer";
+			}
+			if (cboLanguage.Text == "English")
+			{
+				lblArea.Text = "Area";
+				lblTerm.Text = "Term";
+				lblGrowth.Text = "Growth";
+				lblRelocateObjectives.Text = "Relocation Objectives";
+				lblLocation.Text = "Location";
+				lblBuildingType.Text = "Building Type";
+				lblComments.Text = "Comments";
+
+
+				lblFloorPlans.Text = "Floor Plans";
+				lblPropertyImages.Text = "Property Images";
+				rdoFloorPlan.Text = "Floor Plan";
+				rdoGeneralImage.Text = "General Image";
+				lblPropertyList.Text = "List of Property Images";
+
+				btnSelectImage.Text = "Select";
+				btnSaveImage.Text = "Save";
+				btnDeleteImage.Text = "Delete";
+			}
+		}
+
+		
 	}
 }
